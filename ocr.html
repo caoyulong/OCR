@@ -1,0 +1,40 @@
+<html>
+<head>
+	<script src="ocr.js"></script>
+</head>
+<body onload="ocr.onLoadFunction()">
+	<div id="main-container" style="text-align: center;">
+		<h1>OCR Digit</h1>
+		<canvas id="canvas" width="200" height="200"></canvas>
+		<form name="input">
+			<p>Digit: <input id="digit" type="text"> </p>
+			<input type="button" value="Train" onclick="ocr.train()">
+			<input type="button" value="Test" onclick="ocr.test()">
+			<input type="button" value="Reset" onclick="ocr.resetCanvas();"/>
+		</form>
+	</div>
+	<h4 id="原理"><a name="原理" href="#原理"></a>原理</h4>
+<ul>
+<li>使用单层的人工神经网络（ANN）</li><li>使用BP（Backpropagation）训练</li></ul>
+<h4 id="组成"><a name="组成" href="#组成"></a>组成</h4>
+<ul>
+<li>ocr.html 训练和测试的交互界面</li><li>ocr.js 处理网页和服务器之间的交互</li><li>ocr.py 人工神经网络</li><li>server.py 服务器</li><li>mydata.csv 存储数据（像素点）</li><li>mydataLabels.csv 存储数据（像素点表示的值）</li></ul>
+<h4 id="具体设计"><a name="具体设计" href="#具体设计"></a>具体设计</h4>
+<ul>
+<li>网页上为 20*20 的画布，共400个像素点，选中的像素点为1，其他为0，400个像素点存储在 1*400 的矩阵中作为输入y0</li><li>输出为y2, 10*1矩阵，结果为其最大值的行数</li></ul>
+<p>网络内部存储4个矩阵，num_hidden_nodes为隐藏层神经元数量，因为只有一层，也就是总共的神经元数量：</p>
+<ul>
+<li><strong>theta1</strong>  num_hidden_nodes*400</li><li><strong>theta2</strong>  10*num_hidden_nodes</li><li><strong>input_layer_bias</strong>  num_hidden_nodes*1</li><li><strong>hidden_layer_bias</strong>  10*1</li></ul>
+<h4 id="训练过程"><a name="训练过程" href="#训练过程"></a>训练过程</h4>
+<p>刚开始要对这四个矩阵进行初始化，初始化为-1~1之间的数</p>
+<ol>
+<li>前向传播Forward propagation</li><li>后向传播Back propagation</li><li>更新权值</li></ol>
+<h4 id="识别"><a name="识别" href="#识别"></a>识别</h4>
+<p>对已经训练好的网络，进行一次前向传播，得到<strong>y2</strong>，其最大值的行数即为预测结果</p>
+<h4 id="神经元数量的选取和训练次数的选取"><a name="神经元数量的选取和训练次数的选取" href="#神经元数量的选取和训练次数的选取"></a>神经元数量的选取和训练次数的选取</h4>
+<ul>
+<li>通过交叉验证把数据拆分为训练集和测试集两部分，</li><li>神经元数量范围10~50，训练次数范围1~9，遍历所有可能，使用相同的训练集和测试集，统计其正确率</li><li>最后根据结果选取神经元数量49，8次训练</li></ul>
+<p>其中正确率最大的几项为：<br>25 Hidden Nodes, 9 trainings: 0.833333333333<br>26 Hidden Nodes, 7 trainings: 0.833333333333<br>29 Hidden Nodes, 8 trainings: 0.833333333333<br>30 Hidden Nodes, 7 trainings: 0.833333333333<br>32 Hidden Nodes, 7 trainings: 0.833333333333<br>33 Hidden Nodes, 8 trainings: 0.833333333333<br>43 Hidden Nodes, 9 trainings: 0.833333333333<br>49 Hidden Nodes, 8 trainings: 0.833333333333</p>
+
+</body>
+</html>
